@@ -1,8 +1,4 @@
-import 'package:bytebank/database/app_database.dart';
-import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/screens/dashboard.dart';
-import 'package:bytebank/screens/form_contatos.dart';
-import 'package:bytebank/screens/lista_contatos.dart';
 import 'package:flutter/material.dart';
 
 void main() {

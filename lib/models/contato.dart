@@ -9,7 +9,8 @@ class Contato {
     this.conta,
   );
 
-  toStr() {
+  @override
+  toString() {
     return 'Contato{id: $id, nome: $nome, conta: $conta}';
   }
 }
