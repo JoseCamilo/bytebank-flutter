@@ -14,7 +14,7 @@ class _ListaContatosState extends State<ListaContatos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contatos'),
+        title: Text('Transferência'),
       ),
       body: FutureBuilder(
         future: _dao.findAll(),

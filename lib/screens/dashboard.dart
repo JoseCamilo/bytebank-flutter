@@ -14,45 +14,80 @@ class Dashboard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Image.asset('images/bytebank_logo.png'),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Material(
-              color: Theme.of(context).primaryColor,
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    (MaterialPageRoute(
-                      builder: (context) => ListaContatos(),
-                    )),
-                  );
-                },
-                child: Container(
-                  height: 100,
-                  width: 150,
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.people,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                      Text(
-                        'Contatos',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _ItemDashboard(
+                  'Transferir',
+                  Icons.monetization_on,
+                  onClick: () => _showListaContatos(context),
                 ),
-              ),
+                _ItemDashboard(
+                  'Transações',
+                  Icons.description,
+                  onClick: () => debugPrint('Clicou em transações'),
+                ),
+              ],
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+void _showListaContatos(BuildContext context) {
+  Navigator.of(context).push(
+    (MaterialPageRoute(
+      builder: (context) => ListaContatos(),
+    )),
+  );
+}
+
+class _ItemDashboard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Function onClick;
+
+  _ItemDashboard(
+    this.title,
+    this.icon, {
+    @required this.onClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Material(
+        color: Theme.of(context).primaryColor,
+        child: InkWell(
+          onTap: this.onClick,
+          child: Container(
+            height: 100,
+            width: 150,
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  this.icon,
+                  color: Colors.white,
+                  size: 24,
+                ),
+                Text(
+                  this.title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
