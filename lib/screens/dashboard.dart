@@ -1,4 +1,5 @@
 import 'package:bytebank/screens/lista_contatos.dart';
+import 'package:bytebank/screens/lista_transferencias.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatelessWidget {
@@ -26,7 +27,7 @@ class Dashboard extends StatelessWidget {
                 _ItemDashboard(
                   'Transações',
                   Icons.description,
-                  onClick: () => debugPrint('Clicou em transações'),
+                  onClick: () => _showListaTransferencias(context),
                 ),
               ],
             ),
@@ -41,6 +42,14 @@ void _showListaContatos(BuildContext context) {
   Navigator.of(context).push(
     (MaterialPageRoute(
       builder: (context) => ListaContatos(),
+    )),
+  );
+}
+
+void _showListaTransferencias(BuildContext context) {
+  Navigator.of(context).push(
+    (MaterialPageRoute(
+      builder: (context) => ListaTransferencias(),
     )),
   );
 }
