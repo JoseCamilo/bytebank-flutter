@@ -63,7 +63,8 @@ class _ItemDashboard extends StatelessWidget {
     this.title,
     this.icon, {
     @required this.onClick,
-  });
+  })  : assert(icon != null),
+        assert(onClick != null);
 
   @override
   Widget build(BuildContext context) {
