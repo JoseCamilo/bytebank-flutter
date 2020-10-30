@@ -1,3 +1,5 @@
+import 'package:bytebank/components/mensagem_centralizada.dart';
+import 'package:bytebank/components/progresso.dart';
 import 'package:bytebank/database/dao/contato_dao.dart';
 import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/screens/form_contatos.dart';
@@ -23,16 +25,7 @@ class _ListaContatosState extends State<ListaContatos> {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    Text('Carregando...')
-                  ],
-                ),
-              );
+              return Progresso();
               break;
             case ConnectionState.active:
               break;
@@ -47,8 +40,10 @@ class _ListaContatosState extends State<ListaContatos> {
               break;
           }
 
-          return Center(
-            child: Text('Erro ao carregar dados!!'),
+          return MenssagemCentralizada(
+            'Erro ao carregar dados!',
+            icone: Icons.warning,
+            fontSize: 16,
           );
         },
       ),

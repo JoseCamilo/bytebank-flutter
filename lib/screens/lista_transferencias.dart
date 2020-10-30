@@ -1,5 +1,6 @@
-import 'package:bytebank/database/dao/contato_dao.dart';
-import 'package:bytebank/models/contato.dart';
+import 'package:bytebank/components/mensagem_centralizada.dart';
+import 'package:bytebank/components/progresso.dart';
+import 'package:bytebank/http/webclient.dart';
 import 'package:bytebank/models/transferencia.dart';
 import 'package:flutter/material.dart';
 
@@ -9,22 +10,43 @@ class ListaTransferencias extends StatefulWidget {
 }
 
 class _ListaTransferenciasState extends State<ListaTransferencias> {
-  final List<Transferencia> transferencias = List();
-
   @override
   Widget build(BuildContext context) {
-    transferencias.add(Transferencia(0, 1000, Contato(0, 'Jose', 1234)));
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Transferências'),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return _TransferenciaItem(transferencias[index]);
-        },
-        itemCount: transferencias.length,
-      ),
+      body: FutureBuilder(
+          future: findAllTransferencias(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                break;
+              case ConnectionState.waiting:
+                return Progresso();
+                break;
+              case ConnectionState.active:
+                break;
+              case ConnectionState.done:
+                if (snapshot.hasData) {
+                  final List<Transferencia> transferencias = snapshot.data;
+                  if (transferencias.isNotEmpty) {
+                    return ListView.builder(
+                      itemBuilder: (context, index) {
+                        return _TransferenciaItem(transferencias[index]);
+                      },
+                      itemCount: transferencias.length,
+                    );
+                  }
+                }
+                break;
+            }
+            return MenssagemCentralizada(
+              'Nenhuma Transferência encontrada!',
+              icone: Icons.warning,
+              fontSize: 16,
+            );
+          }),
     );
   }
 }
