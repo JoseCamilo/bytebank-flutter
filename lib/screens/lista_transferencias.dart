@@ -1,6 +1,6 @@
 import 'package:bytebank/components/mensagem_centralizada.dart';
 import 'package:bytebank/components/progresso.dart';
-import 'package:bytebank/http/webclient.dart';
+import 'package:bytebank/http/webclients/transferencias_webclient.dart';
 import 'package:bytebank/models/transferencia.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +10,7 @@ class ListaTransferencias extends StatefulWidget {
 }
 
 class _ListaTransferenciasState extends State<ListaTransferencias> {
+  final TransferenciasWebclient _webClient = TransferenciasWebclient();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +18,7 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
         title: Text('Transferências'),
       ),
       body: FutureBuilder(
-          future: findAllTransferencias(),
+          future: _webClient.findAll(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -29,7 +30,7 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
                 break;
               case ConnectionState.done:
                 if (snapshot.hasData) {
-                  final List<Transferencia> transferencias = snapshot.data;
+                  final List<Transaction> transferencias = snapshot.data;
                   if (transferencias.isNotEmpty) {
                     return ListView.builder(
                       itemBuilder: (context, index) {
@@ -52,7 +53,7 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
 }
 
 class _TransferenciaItem extends StatelessWidget {
-  final Transferencia transferencia;
+  final Transaction transferencia;
 
   _TransferenciaItem(this.transferencia);
 
@@ -61,13 +62,13 @@ class _TransferenciaItem extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(
-          transferencia.valor.toString(),
+          transferencia.value.toString(),
           style: TextStyle(
             fontSize: 24,
           ),
         ),
         subtitle: Text(
-          transferencia.contato.conta.toString(),
+          transferencia.contact.accountNumber.toString(),
           style: TextStyle(
             fontSize: 16,
           ),

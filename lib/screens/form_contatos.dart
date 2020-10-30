@@ -52,7 +52,7 @@ class _FormContatosState extends State<FormContatos> {
                   onPressed: () {
                     final String nome = _nomeController.text;
                     final int conta = int.tryParse(_contaController.text);
-                    final Contato novoContato = Contato(0, nome, conta);
+                    final Contact novoContato = Contact(0, nome, conta);
                     _dao.save(novoContato).then((id) => Navigator.pop(context));
                   },
                   child: Text('Criar'),

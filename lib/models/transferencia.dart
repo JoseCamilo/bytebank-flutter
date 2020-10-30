@@ -1,16 +1,25 @@
 import 'contato.dart';
 
-class Transferencia {
-  final double valor;
-  final Contato contato;
+class Transaction {
+  final double value;
+  final Contact contact;
 
-  Transferencia(
-    this.valor,
-    this.contato,
+  Transaction(
+    this.value,
+    this.contact,
   );
 
   @override
   toString() {
-    return 'Transferencia{valor: $valor, contato: $contato}';
+    return 'Transaction{value: $value, contact: $contact}';
   }
+
+  Transaction.fromJson(Map<String, dynamic> json)
+      : value = json['value'],
+        contact = Contact.fromJson(json['contact']);
+
+  Map<String, dynamic> toJson() => {
+        'value': value,
+        'contact': contact.toJson(),
+      };
 }

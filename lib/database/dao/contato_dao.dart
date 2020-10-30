@@ -12,31 +12,31 @@ class ContatoDao {
   static const String _nome = 'nome';
   static const String _numeroConta = 'numero_conta';
 
-  Future<int> save(Contato contato) async {
+  Future<int> save(Contact contato) async {
     final Database db = await getDatabase();
     Map<String, dynamic> contatoMap = _toMap(contato);
     return db.insert(_tableName, contatoMap);
   }
 
-  Future<List<Contato>> findAll() async {
+  Future<List<Contact>> findAll() async {
     final Database db = await getDatabase();
     final List<Map<String, dynamic>> result = await db.query(_tableName);
-    List<Contato> contatos = _toList(result);
+    List<Contact> contatos = _toList(result);
     return contatos;
   }
 
-  Map<String, dynamic> _toMap(Contato contato) {
+  Map<String, dynamic> _toMap(Contact contato) {
     final Map<String, dynamic> contatoMap = Map();
-    contatoMap[_nome] = contato.nome;
-    contatoMap[_numeroConta] = contato.conta;
+    contatoMap[_nome] = contato.name;
+    contatoMap[_numeroConta] = contato.accountNumber;
     return contatoMap;
   }
 
-  List<Contato> _toList(List<Map<String, dynamic>> result) {
-    final List<Contato> contatos = List();
+  List<Contact> _toList(List<Map<String, dynamic>> result) {
+    final List<Contact> contatos = List();
 
     for (Map<String, dynamic> row in result) {
-      final Contato contato = Contato(
+      final Contact contato = Contact(
         row[_id],
         row[_nome],
         row[_numeroConta],

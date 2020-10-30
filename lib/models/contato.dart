@@ -1,16 +1,26 @@
-class Contato {
+class Contact {
   final int id;
-  final String nome;
-  final int conta;
+  final String name;
+  final int accountNumber;
 
-  Contato(
+  Contact(
     this.id,
-    this.nome,
-    this.conta,
+    this.name,
+    this.accountNumber,
   );
 
   @override
   toString() {
-    return 'Contato{id: $id, nome: $nome, conta: $conta}';
+    return 'Contact{id: $id, name: $name, accountNumber: $accountNumber}';
   }
+
+  Contact.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        accountNumber = json['accountNumber'];
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'accountNumber': accountNumber,
+      };
 }

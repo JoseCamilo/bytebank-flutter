@@ -3,6 +3,7 @@ import 'package:bytebank/components/progresso.dart';
 import 'package:bytebank/database/dao/contato_dao.dart';
 import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/screens/form_contatos.dart';
+import 'package:bytebank/screens/form_transferencia.dart';
 import 'package:flutter/material.dart';
 
 class ListaContatos extends StatefulWidget {
@@ -30,10 +31,17 @@ class _ListaContatosState extends State<ListaContatos> {
             case ConnectionState.active:
               break;
             case ConnectionState.done:
-              final List<Contato> contatos = snapshot.data;
+              final List<Contact> contatos = snapshot.data;
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  return _ContatoItem(contatos[index]);
+                  final Contact contato = contatos[index];
+                  return _ContatoItem(
+                    contato,
+                    onClick: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => FormTransferencia(contato)));
+                    },
+                  );
                 },
                 itemCount: contatos.length,
               );
@@ -68,22 +76,27 @@ class _ListaContatosState extends State<ListaContatos> {
 }
 
 class _ContatoItem extends StatelessWidget {
-  final Contato contato;
+  final Contact contato;
+  final Function onClick;
 
-  _ContatoItem(this.contato);
+  _ContatoItem(
+    this.contato, {
+    @required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: onClick,
         title: Text(
-          contato.nome,
+          contato.name,
           style: TextStyle(
             fontSize: 24,
           ),
         ),
         subtitle: Text(
-          contato.conta.toString(),
+          contato.accountNumber.toString(),
           style: TextStyle(
             fontSize: 16,
           ),
