@@ -15,14 +15,14 @@ class TransferenciasWebclient {
     return bodyJson.map((el) => Transaction.fromJson(el)).toList();
   }
 
-  Future<dynamic> save(Transaction transferencia) async {
+  Future<dynamic> save(Transaction transferencia, String password) async {
     final String body = jsonEncode(transferencia.toJson());
     final Response response = await client
         .post(
           _baseURL,
           headers: {
             'Content-type': 'application/json',
-            'password': '1000',
+            'password': password,
           },
           body: body,
         )

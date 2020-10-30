@@ -1,3 +1,4 @@
+import 'package:bytebank/components/dialog_auth_transaction.dart';
 import 'package:bytebank/http/webclients/transferencias_webclient.dart';
 import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/models/transferencia.dart';
@@ -64,11 +65,15 @@ class _TransactionFormState extends State<FormTransferencia> {
                           double.tryParse(_valueController.text);
                       final transactionCreated =
                           Transaction(value, widget.contact);
-                      _webClient.save(transactionCreated).then((result) {
-                        if (result != null) {
-                          Navigator.pop(context);
-                        }
-                      });
+                      showDialog(
+                          context: context,
+                          builder: (contextDialog) {
+                            return DialogAuthTransaction(
+                              onConfirm: (password) {
+                                _save(transactionCreated, password, context);
+                              },
+                            );
+                          });
                     },
                   ),
                 ),
@@ -78,5 +83,17 @@ class _TransactionFormState extends State<FormTransferencia> {
         ),
       ),
     );
+  }
+
+  void _save(
+    Transaction transactionCreated,
+    String password,
+    BuildContext context,
+  ) {
+    _webClient.save(transactionCreated, password).then((result) {
+      if (result != null) {
+        Navigator.pop(context);
+      }
+    });
   }
 }
