@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:bytebank/components/dialog_auth_transaction.dart';
+import 'package:bytebank/components/progresso.dart';
+import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/http/webclients/transferencias_webclient.dart';
 import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/models/transferencia.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class FormTransferencia extends StatefulWidget {
   final Contact contact;
@@ -16,9 +21,12 @@ class FormTransferencia extends StatefulWidget {
 class _TransactionFormState extends State<FormTransferencia> {
   final TextEditingController _valueController = TextEditingController();
   final TransferenciasWebclient _webClient = TransferenciasWebclient();
+  final String transactionId = Uuid().v4();
+  bool _sending = false;
 
   @override
   Widget build(BuildContext context) {
+    print(transactionId);
     return Scaffold(
       appBar: AppBar(
         title: Text('New transaction'),
@@ -29,6 +37,12 @@ class _TransactionFormState extends State<FormTransferencia> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Visibility(
+                child: Progresso(
+                  message: 'Enviando...',
+                ),
+                visible: _sending,
+              ),
               Text(
                 widget.contact.name,
                 style: TextStyle(
@@ -64,7 +78,7 @@ class _TransactionFormState extends State<FormTransferencia> {
                       final double value =
                           double.tryParse(_valueController.text);
                       final transactionCreated =
-                          Transaction(value, widget.contact);
+                          Transaction(transactionId, value, widget.contact);
                       showDialog(
                           context: context,
                           builder: (contextDialog) {
@@ -89,11 +103,47 @@ class _TransactionFormState extends State<FormTransferencia> {
     Transaction transactionCreated,
     String password,
     BuildContext context,
-  ) {
-    _webClient.save(transactionCreated, password).then((result) {
-      if (result != null) {
-        Navigator.pop(context);
-      }
+  ) async {
+    setState(() {
+      _sending = true;
     });
+    final Transaction transaction =
+        await _webClient.save(transactionCreated, password).catchError((e) {
+      _showFailureMessage(
+        context,
+        message: e.message,
+      );
+    }, test: (e) => e is HttpException).catchError((e) {
+      _showFailureMessage(
+        context,
+        message: 'Falha na conexão, tente novamente mais tarde',
+      );
+    }, test: (e) => e is TimeoutException).catchError((e) {
+      _showFailureMessage(context);
+    }).whenComplete(() {
+      setState(() {
+        _sending = false;
+      });
+    });
+
+    if (transaction != null) {
+      await showDialog(
+          context: context,
+          builder: (contextDialog) {
+            return SuccessDialog('Transferência realizada');
+          });
+      Navigator.pop(context);
+    }
+  }
+
+  void _showFailureMessage(
+    BuildContext context, {
+    String message = 'Erro desconhecido',
+  }) {
+    showDialog(
+        context: context,
+        builder: (contextDialog) {
+          return FailureDialog(message);
+        });
   }
 }
